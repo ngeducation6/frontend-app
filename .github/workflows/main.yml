@@ -50,11 +50,12 @@ jobs:
           mongosh --eval "load('createUser.js')"
 
       - name: Execute loaddata.js script
-        run: mongosh --eval "load('loaddata.js')"
+        run: |
+          cd dbscripts
+          mongosh --eval "load('loaddata.js')"
 
       - name: Build Backend
         run: |
-          cd ..
           # sudo apt install -y golang-go
           go build
 
