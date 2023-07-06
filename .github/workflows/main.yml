@@ -1,0 +1,77 @@
+name: Full CI/CD Pipeline
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - master
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Backend Repository
+        uses: actions/checkout@v2
+        with:
+          repository: ngeducation6/backend-app
+          ref: main
+
+      - name: Build Backend
+        run: go build
+
+      - name: Run Backend
+        run: |
+          go run main.go &
+          sleep 5
+          if curl -sSf http://localhost:8080/data > /dev/null; then
+            echo "Backend server is running"
+          else
+            echo "Backend server failed to start"
+            exit 1
+          fi
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Frontend Repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Start Frontend Server
+        run: |
+          npm start &
+          sleep 5
+          if curl -sSf http://localhost:3000/ > /dev/null; then
+            echo "Frontend server is running"
+          else
+            echo "Frontend server failed to start"
+            exit 1
+          fi
+
+  cypress:
+    runs-on: ubuntu-latest
+
+    needs: [backend, frontend]
+
+    steps:
+      - name: Checkout Frontend Repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Cypress Tests
+        run: npx cypress run
