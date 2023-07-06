@@ -7,53 +7,13 @@ on:
       - synchronize
     branches:
       - master
+
 jobs:
   backend:
     runs-on: ubuntu-latest
 
     steps:
       - name: Set up MongoDB
-        run: |
-          wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-org
-
-      - name: Start MongoDB Service
-        run: sudo service mongod start
-
-      - name: Verify MongoDB Service
-        run: |
-          sleep 5
-          if ! sudo service mongod status | grep -q "active (running)"; then
-            echo "MongoDB service failed to start"
-            exit 1
-          else
-            echo "MongoDB service is running"
-          fi
-
-      - name: Wait for MongoDB to initialize
-        run: sleep 5
-
-      - name: Execute createUser.js script
-        run: mongosh --eval "load('dbscripts/createUser.js')"
-
-      - name: Execute loaddata.js script
-        run: mongosh --eval "load('dbscripts/loaddata.js')"
-
-      - name: Build Backend
-        run: go build
-
-      - name: Run Backend
-        run: go run main.go
-
-
-jobs:
-  backend:
-    runs-on: ubuntu-latest
-
-    steps:
-        - name: Set up MongoDB
         run: |
           wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
           echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
