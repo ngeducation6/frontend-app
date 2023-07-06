@@ -10,13 +10,13 @@ on:
 
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Set up MongoDB
         run: |
-          wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu $(lsb_release -cs)/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+          wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
           sudo apt-get update
           sudo apt-get install -y mongodb-org
 
@@ -29,7 +29,7 @@ jobs:
       - name: Verify MongoDB Service
         run: |
           sleep 5
-          if ! sudo service mongod status | grep -q "active (running)"; then
+          if ! sudo service mongod status  | grep -q "active (running)"; then
             echo "MongoDB service failed to start"
             exit 1
           else
@@ -44,13 +44,19 @@ jobs:
           ref: master
           
       - name: Execute createUser.js script
-        run: mongosh --eval "load('dbscripts/createUser.js')"
+        run: |
+          cd dbscripts
+          npm install
+          mongosh --eval "load('createUser.js')"
 
       - name: Execute loaddata.js script
-        run: mongosh --eval "load('dbscripts/loaddata.js')"
+        run: mongosh --eval "load('loaddata.js')"
 
       - name: Build Backend
-        run: go build
+        run: |
+          cd ..
+          # sudo apt install -y golang-go
+          go build
 
       - name: Run Backend
         run: |
@@ -64,7 +70,7 @@ jobs:
           fi
 
   frontend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [backend]
 
     steps:
@@ -74,35 +80,46 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install --omit=dev
 
       - name: Build Frontend
-        run: npm run build
-
-      - name: Start Frontend Server
         run: |
-          npm start &
-          sleep 5
-          if curl -sSf http://localhost:3000/ > /dev/null; then
-            echo "Frontend server is running"
-          else
-            echo "Frontend server failed to start"
-            exit 1
-          fi
+          npm install react-scripts --save
+          sudo chmod +x node_modules/.bin/react-scripts
+          npm run build
 
-  cypress:
-    runs-on: ubuntu-latest
+      # - name: Start Frontend Server
+      #   run: |
+      #     npm start &
+      #     sleep 5
+      #     if curl -sSf http://localhost:3000/ > /dev/null; then
+      #       echo "Frontend server is running"
+      #     else
+      #       echo "Frontend server failed to start"
+      #       exit 1
+      #     fi
 
-    needs: [backend, frontend]
-
-    steps:
-      - name: Checkout Frontend Repository
-        uses: actions/checkout@v2
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          build: npm run build
+          start: npm start
+          browser: chrome
 
-      - name: Install Dependencies
-        run: npm ci
 
-      - name: Run Cypress Tests
-        run: npx cypress run
+  # cypress:
+  #   runs-on: ubuntu-20.04
+
+  #   needs: [backend, frontend]
+
+  #   steps:
+  #     - name: Checkout Frontend Repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: ${{ github.event.pull_request.head.ref }}
+
+  #     - name: Install Dependencies
+  #       run: npm install
+
+  #     - name: Run Cypress Tests
+  #       run: npx cypress run
