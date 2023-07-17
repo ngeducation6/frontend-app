@@ -3,6 +3,11 @@ describe('Frontend App', () => {
     cy.visit('http://localhost:3000/');
   });
 
+  it('Page Title Test', () => {
+    // Assert the title
+    cy.title().should('eq', 'Frontend app');
+  });
+
   it('Displays correct heading', () => {
     cy.get('h1').should('contain', 'Data from Backend');
   });
