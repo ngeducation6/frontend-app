@@ -1,12 +1,16 @@
 name: Full CI/CD Pipeline
 
+# on:
+#   pull_request_target:
+#     types:
+#       - opened
+#       - synchronize
+#     branches:
+#       - master
 on:
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
+  push:
     branches:
-      - master
+      - test-workflow-branch  # replace with the desired branch name
 
 jobs:
   front-end-backend:
