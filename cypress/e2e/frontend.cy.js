@@ -5,7 +5,7 @@ describe('Frontend App', () => {
 
   it('Page Title Test', () => {
     // Assert the title
-    cy.title().should('eq', 'Frontend app');
+    cy.title().should('eq', 'React App - test workflow branch');
   });
 
   it('Displays correct heading', () => {
