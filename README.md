@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+ 
+ git clone -b apptserver-br https://github.com/ngeducation6/backend-app.git
+ cd backend-app/
+ git status
+ cd scheduler-service/
+ # start scheduler
+ npm install express node-schedule axios
+ node scheduler.js
+ #In another terminal start go server
+ cd backend-app/
+ go run .
+ #In another terminal start the frontend app
+ git clone -b appt-br https://github.com/ngeducation6/frontend-app.git
+ cd frontend-app/
+ git status
+ npm install
+ npm start
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+set a appointment time using the frontend , observer appointment is set in go server and scheduler. When the time of appointment kick you can observe logs to see webhook is invoked by scheduler.
 
-## Available Scripts
+# Appointment Scheduling Frontend
 
-In the project directory, you can run:
+This is the frontend component of the Appointment Scheduling Application. It allows users to set appointments and check their status.
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js and npm installed on your system.
+- Basic knowledge of working with command line interfaces.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Getting Started
 
-### `npm test`
+1. Clone or download this repository to your local machine.
+2. Open a terminal and navigate to the `frontend-app` directory.
+3. Install the required dependencies by running:
+npm install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+4. Start the frontend development server by running:
+npm start
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. Open a web browser and navigate to `http://localhost:3000` to use the frontend application.
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. On the homepage, you'll see the current date and time displayed.
+2. To set an appointment, select a date and time using the input field, enter the duration in nanoseconds, and click "Set Appointment."
+3. To check the appointment status, click "Check Status" under "Appointment Status." The status will be displayed below.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Important Notes
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Ensure that the backend server (`main.go`) and the scheduler service (`scheduler.js`) are both running while using the frontend.
+- The URLs in the code should accurately point to the correct endpoints of the backend and scheduler services.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+## Backend
+Go to backend-app folder and run:
+go run .
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## scheduler 
+go to scheduler-service folder and run:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+npm install express node-schedule axios
+node scheduler.js
